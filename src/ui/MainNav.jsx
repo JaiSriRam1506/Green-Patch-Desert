@@ -12,9 +12,18 @@ const NavList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  /* list-style-type: none; */
 `;
 
 const StyledNavLink = styled(NavLink)`
+  /* text-decoration: none;
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
+  } */
   &:link,
   &:visited {
     display: flex;

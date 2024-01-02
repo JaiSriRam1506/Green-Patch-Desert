@@ -51,14 +51,14 @@ const variations = {
 const Button = styled.button`
   border: none;
   border-radius: var(--border-radius-sm);
-  box-shadow: var() (--shadow-sm);
+  box-shadow: var(--shadow-sm);
 
   ${(props) => sizes[props.size]}
   ${(props) => variations[props.variation]}
 `;
 
 Button.defaultProps = {
-  sizes: "medium",
-  variations: "primary",
+  size: "medium",
+  variation: "primary",
 };
 export default Button;
