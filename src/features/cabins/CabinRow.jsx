@@ -1,17 +1,10 @@
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
-import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
-import {
-  HiDuplicate,
-  HiPencil,
-  HiQuestionMarkCircle,
-  HiTrash,
-} from "react-icons/hi";
+import { HiDuplicate, HiPencil, HiTrash } from "react-icons/hi";
 import { CreateCabinMethod, DeleteCabinMethod } from "./useCabinsMethods";
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import Modal from "../../ui/Modal";
 
 const TableRow = styled.div`
   display: grid;
@@ -53,7 +46,6 @@ const Discount = styled.div`
 `;
 
 export default function CabinRow({ cabin }) {
-  const [showForm, setShowForm] = useState(false);
   const {
     id: cabinId,
     name,
@@ -98,26 +90,48 @@ export default function CabinRow({ cabin }) {
   };
 
   return (
-    <>
-      <TableRow role="row">
-        <Img src={image} />
-        <Cabin>{name}</Cabin>
-        <div>Fits up to {maxCapacity} guests</div>
-        <Price>{formatCurrency(regularPrice)}</Price>
+    <TableRow role="row">
+      <Img src={image} />
+      <Cabin>{name}</Cabin>
+      <div>Fits up to {maxCapacity} guests</div>
+      <Price>{formatCurrency(regularPrice)}</Price>
+      {/* Check if Discount is Available or not */}
+      {discount ? (
         <Discount>{formatCurrency(discount)}</Discount>
-        <div>
-          <button onClick={handleDuplicate}>
-            <HiDuplicate />
-          </button>
-          <button onClick={() => setShowForm((showForm) => !showForm)}>
-            <HiPencil />
-          </button>
-          <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}>
-            <HiTrash />
-          </button>
-        </div>
-      </TableRow>
-      {showForm && <CreateCabinForm updateCabinData={cabin} />}
-    </>
+      ) : (
+        <span>&mdash;</span>
+      )}
+
+      <div>
+        <button onClick={handleDuplicate}>
+          <HiDuplicate />
+        </button>
+        {/* Converting all the Below Component into Compound Component which is already created */}
+        <Modal>
+          {/* This is for opening form for Editing the cabins details */}
+          <Modal.Open opens="edit">
+            <button>
+              <HiPencil />
+            </button>
+          </Modal.Open>
+          <Modal.Window name="edit">
+            <CreateCabinForm updateCabinData={cabin} />
+          </Modal.Window>
+          {/* This is for Deleting the Cabins with Confirm Window Button */}
+          <Modal.Open>
+            <button disabled={isDeleting}>
+              <HiTrash />
+            </button>
+          </Modal.Open>
+          <Modal.Window>
+            <ConfirmDelete
+              resourceName="cabins"
+              disabled={isDeleting}
+              onConfirm={() => deleteCabin(cabinId)}
+            />
+          </Modal.Window>
+        </Modal>
+      </div>
+    </TableRow>
   );
 }
