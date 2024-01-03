@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { HiX } from "react-icons/hi";
 import { createPortal } from "react-dom";
 import { cloneElement, createContext, useContext, useState } from "react";
+import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -104,13 +105,14 @@ function Open({ children, opens: opensWithModal }) {
 /* 4.Create Another Compound comp which will be as sub Compound Comp */
 function Window({ children, name }) {
   const { close, openName } = useContext(ModalContext);
+  const { ref } = useOutsideClick({ close });
   console.log(name, openName);
 
   if (name !== openName) return null;
 
   return createPortal(
     <Overlay>
-      <StyledModal>
+      <StyledModal ref={ref}>
         <Button onClick={close}>
           <HiX />
         </Button>
