@@ -28,8 +28,8 @@ import Table from "../../ui/Table";
 `;
  */
 export default function CabinTable() {
-  console.log(Table);
-  const { isLoading, cabins } = GetCabinsTable();
+  const response = GetCabinsTable();
+  const { isLoading, cabins } = response;
   /* const {
     isLoading,
     data: cabins,
@@ -67,9 +67,10 @@ export default function CabinTable() {
         <div>Discount</div>
         <div></div>
       </Table.Header>
-      {cabins?.map((cabin) => (
-        <CabinRow cabin={cabin} key={cabin.id} />
-      ))}
+      <Table.Body
+        data={cabins}
+        render={(cabin) => <CabinRow cabin={cabin} key={cabin.id} />}
+      />
     </Table>
   );
 }

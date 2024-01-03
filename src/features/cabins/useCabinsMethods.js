@@ -65,7 +65,7 @@ export function DeleteCabinMethod() {
 
 export function GetCabinsTable() {
   const {
-    loading: isLoading,
+    isLoading,
     data: cabins,
     error,
   } = useQuery({
