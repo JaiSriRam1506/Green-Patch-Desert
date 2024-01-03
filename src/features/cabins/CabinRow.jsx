@@ -5,8 +5,9 @@ import { HiDuplicate, HiPencil, HiTrash } from "react-icons/hi";
 import { CreateCabinMethod, DeleteCabinMethod } from "./useCabinsMethods";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import Modal from "../../ui/Modal";
+import Table from "../../ui/Table";
 
-const TableRow = styled.div`
+/* const TableRow = styled.div`
   display: grid;
   grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
   column-gap: 2.4rem;
@@ -16,7 +17,7 @@ const TableRow = styled.div`
   &:not(:last-child) {
     border-bottom: 1px solid var(--color-grey-100);
   }
-`;
+`; */
 
 const Img = styled.img`
   display: block;
@@ -81,7 +82,6 @@ export default function CabinRow({ cabin }) {
       description,
       image,
     };
-    console.log(data);
     await createCabin(data, {
       onSuccess: (data) => {
         console.log(data);
@@ -90,7 +90,10 @@ export default function CabinRow({ cabin }) {
   };
 
   return (
-    <TableRow role="row">
+    // <TableRow role="row">
+    /* Converting Normal Table into Compound Table to re-usability 
+    Table-->Table.Header-->Table.Row-->Table.Body-->Table.Footer */
+    <Table.Row>
       <Img src={image} />
       <Cabin>{name}</Cabin>
       <div>Fits up to {maxCapacity} guests</div>
@@ -118,12 +121,12 @@ export default function CabinRow({ cabin }) {
             <CreateCabinForm updateCabinData={cabin} />
           </Modal.Window>
           {/* This is for Deleting the Cabins with Confirm Window Button */}
-          <Modal.Open>
+          <Modal.Open opens="delete">
             <button disabled={isDeleting}>
               <HiTrash />
             </button>
           </Modal.Open>
-          <Modal.Window>
+          <Modal.Window name="delete">
             <ConfirmDelete
               resourceName="cabins"
               disabled={isDeleting}
@@ -132,6 +135,6 @@ export default function CabinRow({ cabin }) {
           </Modal.Window>
         </Modal>
       </div>
-    </TableRow>
+    </Table.Row>
   );
 }
