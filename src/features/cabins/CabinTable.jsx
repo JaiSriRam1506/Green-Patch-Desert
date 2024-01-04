@@ -33,17 +33,26 @@ export default function CabinTable() {
   const response = GetCabinsTable();
   const { isLoading, cabins } = response;
 
-  /* Using Search Params We are sorting the Cabins based on all, No Discount, With Discount */
-  const [searchParams] = useSearchParams() || "all";
-  const filterValue = searchParams.get("discount") || "all";
+  const [searchParams] = useSearchParams();
 
+  /* Using Search Params We are filtering the Cabins based on all, No Discount, With Discount */
+  const filterValue = searchParams.get("discount") || "all";
   let filteredCabin;
 
   if (filterValue === "all") filteredCabin = cabins;
   if (filterValue === "no-discount")
-    filteredCabin = cabins.filter((cabin) => cabin.discount === 0);
+    filteredCabin = cabins?.filter((cabin) => cabin.discount === 0);
   if (filterValue === "with-discount")
-    filteredCabin = cabins.filter((cabin) => cabin.discount > 0);
+    filteredCabin = cabins?.filter((cabin) => cabin.discount > 0);
+
+  /* Using Search Params We are sorting the Cabins */
+  const sortParams = searchParams.get("sort") || "startDate-des";
+  const [sortValue, sortType] = sortParams.split("-");
+
+  const modifier = sortType === "asc" ? 1 : -1;
+  filteredCabin = filteredCabin?.sort(
+    (a, b) => (a[sortValue] - b[sortValue]) * modifier
+  );
 
   /* const {
     isLoading,
