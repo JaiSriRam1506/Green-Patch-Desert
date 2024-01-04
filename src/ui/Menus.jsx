@@ -71,7 +71,6 @@ export default function Menus({ children }) {
   const close = () => setOpenId("");
   const open = setOpenId;
   const [position, setPosition] = useState();
-  console.log("OpenId:", openId);
 
   return (
     <MenusContext.Provider
@@ -83,7 +82,10 @@ export default function Menus({ children }) {
 }
 function Toggle({ children, id }) {
   const { open, close, openId, setPosition } = useContext(MenusContext);
-  const ref = useOutsideClick(true, close);
+  const ref = useOutsideClick(
+    true,
+    close
+  ); /* This is not working will fix later */
 
   function handleToggle(e) {
     const rect = e.target.closest("button").getBoundingClientRect();
