@@ -4,6 +4,7 @@ import { GetCabinsTable } from "./useCabinsMethods";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
+import Empty from "../../ui/Empty";
 
 /* const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -32,8 +33,10 @@ import { useSearchParams } from "react-router-dom";
 export default function CabinTable() {
   const response = GetCabinsTable();
   const { isLoading, cabins } = response;
-
   const [searchParams] = useSearchParams();
+
+  if (isLoading) return <Spinner />;
+  if (!cabins.length) return <Empty resourceName="Cabins" />;
 
   /* Using Search Params We are filtering the Cabins based on all, No Discount, With Discount */
   const filterValue = searchParams.get("discount") || "all";
@@ -63,7 +66,6 @@ export default function CabinTable() {
     queryFn: getCabins,
   }); */
 
-  if (isLoading) return <Spinner />;
   /* return (
     <Table role="table">
       <TableHeader role="row">
