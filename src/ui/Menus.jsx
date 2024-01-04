@@ -1,6 +1,9 @@
+import { createContext, useContext, useState } from "react";
 import styled from "styled-components";
+import { useOutsideClick } from "../hooks/useOutsideClick";
+import { createPortal } from "react-dom";
 
-const StyledMenu = styled.div`
+const Menu = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -60,3 +63,70 @@ const StyledButton = styled.button`
     transition: all 0.3s;
   }
 `;
+
+const MenusContext = createContext();
+
+export default function Menus({ children }) {
+  const [openId, setOpenId] = useState("");
+  const close = () => setOpenId("");
+  const open = setOpenId;
+  const [position, setPosition] = useState();
+  console.log("OpenId:", openId);
+
+  return (
+    <MenusContext.Provider
+      value={{ open, close, openId, setOpenId, position, setPosition }}
+    >
+      {children}
+    </MenusContext.Provider>
+  );
+}
+function Toggle({ children, id }) {
+  const { open, close, openId, setPosition } = useContext(MenusContext);
+  const ref = useOutsideClick(true, close);
+
+  function handleToggle(e) {
+    const rect = e.target.closest("button").getBoundingClientRect();
+    setPosition({
+      x: window.innerWidth - rect.width - rect.x,
+      y: rect.y + rect.height + 8,
+    });
+    openId === "" || openId !== id ? open(id) : close();
+  }
+
+  return (
+    <StyledToggle onClick={(e) => handleToggle(e)}>{children}</StyledToggle>
+  );
+}
+
+function List({ children, id }) {
+  const { openId, position } = useContext(MenusContext);
+
+  if (openId !== id) return null;
+
+  return createPortal(
+    <StyledList position={position}>{children}</StyledList>,
+    document.body
+  );
+}
+
+function Button({ children, icon, onClick }) {
+  const { close } = useContext(MenusContext);
+  function handleClick() {
+    onClick?.();
+    close();
+  }
+  return (
+    <li>
+      <StyledButton onClick={handleClick}>
+        {icon}
+        <span>{children}</span>
+      </StyledButton>
+    </li>
+  );
+}
+
+Menus.Menu = Menu;
+Menus.Toggle = Toggle;
+Menus.List = List;
+Menus.Button = Button;

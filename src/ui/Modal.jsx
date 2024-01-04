@@ -105,8 +105,7 @@ function Open({ children, opens: opensWithModal }) {
 /* 4.Create Another Compound comp which will be as sub Compound Comp */
 function Window({ children, name }) {
   const { close, openName } = useContext(ModalContext);
-  const { ref } = useOutsideClick({ close });
-  console.log(name, openName);
+  const ref = useOutsideClick(true, close);
 
   if (name !== openName) return null;
 
