@@ -32,6 +32,7 @@ function CheckinBooking() {
   const moveBack = useMoveBack();
   const { isLoading, booking } = useBooking();
   const { checkIn, checkingIn } = useCheckin();
+
   const { settings, isLoading: isLoadingSettings } = useSettings();
   const navigate = useNavigate();
 
