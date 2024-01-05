@@ -15,11 +15,12 @@ export async function getBookings({ filter, sortBy, page }) {
     query = query.order(sortBy.column, { ascending: sortBy.type === "asc" });
   }
 
-  // if (page) {
-  //   const from = (page - 1) * import.meta.env.VITE_PAGE_SIZE;
-  //   const to = from + import.meta.env.VITE_PAGE_SIZE - 1;
-  //   query = query.range(from, to);
-  // }
+  if (page) {
+    const from = (page - 1) * import.meta.env.VITE_PAGE_SIZE;
+    const to = from + Number(import.meta.env.VITE_PAGE_SIZE) - 1;
+    console.log(page, from, to);
+    query = query.range(from, to);
+  }
   const { data, error, count } = await query;
 
   if (error) {
