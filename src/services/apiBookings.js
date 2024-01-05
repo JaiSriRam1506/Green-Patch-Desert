@@ -1,10 +1,10 @@
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
-export async function getBookings({ filter, sortBy }) {
+export async function getBookings({ filter, sortBy, page }) {
   let query = supabase
     .from("bookings")
-    .select("*,cabins(name),guests(fullName,email)");
+    .select("*,cabins(name),guests(fullName,email)", { count: "exact" });
 
   /* Filter Booking data based on filter Condition */
   if (filter) {
@@ -15,13 +15,18 @@ export async function getBookings({ filter, sortBy }) {
     query = query.order(sortBy.column, { ascending: sortBy.type === "asc" });
   }
 
-  const { data, error } = await query;
+  // if (page) {
+  //   const from = (page - 1) * import.meta.env.VITE_PAGE_SIZE;
+  //   const to = from + import.meta.env.VITE_PAGE_SIZE - 1;
+  //   query = query.range(from, to);
+  // }
+  const { data, error, count } = await query;
 
   if (error) {
     console.log(error);
     throw new Error("Couldn't get Bookings details");
   }
-  return data;
+  return { data, count };
 }
 
 export async function getBooking(id) {

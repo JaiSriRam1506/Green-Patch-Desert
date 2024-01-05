@@ -8,7 +8,9 @@ export function useBookingTable() {
   const [column, type] = (searchParams.get("sort") || "startDate-asc").split(
     "-"
   );
-  console.log(column, type);
+
+  /* Pagination */
+  const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
 
   /* Prepare Filter Condition */
   const filter =
@@ -25,14 +27,16 @@ export function useBookingTable() {
     column,
     type,
   };
+
+  /* Query */
   const {
     isLoading,
-    data: bookings,
+    data: { data: bookings, count } = {},
     error,
   } = useQuery({
     queryKey: ["bookings", filter, sortBy],
-    queryFn: () => getBookings({ filter, sortBy }),
+    queryFn: () => getBookings({ filter, sortBy, page }),
   });
 
-  return { error, isLoading, bookings };
+  return { error, isLoading, bookings, count };
 }
